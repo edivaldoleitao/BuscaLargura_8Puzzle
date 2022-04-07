@@ -97,14 +97,25 @@ public class Main {
 		}
 	}
 
-	// Função que verifica se
+	// Função que verifica se o valor de estado do nó avaliado está em explored ou
+	// frontier
 	public static boolean containExploredFrontier(LinkedList<Noh_arvore> frontier, Set<Noh_arvore> explored,
 			Noh_arvore no) {
 		boolean retorno_explored = false;
 		boolean retorno_frontier = false;
 
-		for (Noh_arvore noh : frontier) {
+		for (Noh_arvore noh_front : frontier) {
+			if (Arrays.deepEquals(noh_front.getEstado(), no.getEstado())) {
+				retorno_frontier = true;
+				break;
+			}
+		}
 
+		for (Noh_arvore noh_exp : explored) {
+			if (Arrays.deepEquals(noh_exp.getEstado(), no.getEstado())) {
+				retorno_explored = true;
+				break;
+			}
 		}
 
 		return retorno_explored || retorno_frontier;
@@ -118,6 +129,7 @@ public class Main {
 		Noh_arvore noh_filho = null;
 		String[] acoes = { "ACIMA", "ABAIXO", "ESQ", "DIR" };
 		int profundidade = 1;
+		boolean objetivo = false;
 
 		if (testaObjetivo(no)) {
 			exibeMatriz(no.getEstado());
@@ -138,10 +150,24 @@ public class Main {
 					for (String acao : acoes) {
 						if (geraEstado(no.getEstado(), acao) != null) {
 							noh_filho = geraNoh(profundidade, noh, geraEstado(no.getEstado(), acao), acao);
+
+							if (!containExploredFrontier(frontier, explored, noh_filho)) {
+								if (testaObjetivo(noh_filho)) {
+									System.out.println("objetivo alcançado!! " + "profundidade: " + profundidade);
+									objetivo = true;
+									break;
+								} else {
+									frontier.add(noh_filho);
+								}
+							}
 						}
+
 					}
 					profundidade++;
 				}
+				// verifica flag de objetivo alcançado para sair do laço mais externo
+				if (objetivo)
+					break;
 			}
 
 		}
