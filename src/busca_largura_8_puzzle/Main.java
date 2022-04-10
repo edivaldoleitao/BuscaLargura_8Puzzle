@@ -28,15 +28,27 @@ public class Main {
 	// Função que gera um novo nó
 	public static Noh_arvore geraNoh(int profundidade, Noh_arvore no_pai, int[][] estado, String acao_tomada) {
 
-		int[][] estado_gerado = estado.clone();
+		int[][] estado_gerado = new int[3][3];
 
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				estado_gerado[i][j] = estado[i][j];
+			}
+		}
 		return new Noh_arvore(profundidade, no_pai, estado_gerado, acao_tomada);
 	}
 
 	// gera o estado baseado na movimentação
 	public static int[][] geraEstado(int[][] estado_pai, String acao_tomada) {
 
-		int[][] estado_filho = estado_pai.clone();
+		int[][] estado_filho = new int[3][3];
+
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				estado_filho[i][j] = estado_pai[i][j];
+			}
+		}
+
 		int posx = 0, posy = 0;
 		int v_aux;
 
@@ -143,12 +155,13 @@ public class Main {
 			while (true) {
 				if (frontier.isEmpty()) {
 					System.out.println("Solução falhou");
+					break;
 				} else {
 					noh = frontier.pop();
 					explored.add(noh);
 
 					for (String acao : acoes) {
-						if (geraEstado(no.getEstado(), acao) != null) {
+						if (geraEstado(noh.getEstado(), acao) != null) {
 							noh_filho = geraNoh(profundidade, noh, geraEstado(no.getEstado(), acao), acao);
 
 							if (!containExploredFrontier(frontier, explored, noh_filho)) {
@@ -166,8 +179,9 @@ public class Main {
 					profundidade++;
 				}
 				// verifica flag de objetivo alcançado para sair do laço mais externo
-				if (objetivo)
+				if (objetivo) {
 					break;
+				}
 			}
 
 		}
@@ -187,12 +201,13 @@ public class Main {
 			}
 		}
 
-		objetivo2[2][2] = 0;
+		objetivo2[1][1] = 0;
+		objetivo2[2][2] = 5;
 
 		// nó inicial com o estado inicial
 		Noh_arvore no = new Noh_arvore(0, null, objetivo2, null);
 
-		// buscaLargura(no);
+		buscaLargura(no);
 
 	}
 
