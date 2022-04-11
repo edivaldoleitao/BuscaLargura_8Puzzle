@@ -11,16 +11,7 @@ public class Main {
 	public static boolean testaObjetivo(Noh_arvore no) {
 
 		// preenche a matriz com o valor de objetivo pretendido
-		int valor = 1;
-		int[][] objetivo = new int[3][3];
-
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				objetivo[i][j] = valor;
-				valor++;
-			}
-		}
-		objetivo[2][2] = 0;
+		int[][] objetivo = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 0 } };
 
 		return Arrays.deepEquals(objetivo, no.getEstado());
 	}
@@ -162,7 +153,7 @@ public class Main {
 
 					for (String acao : acoes) {
 						if (geraEstado(noh.getEstado(), acao) != null) {
-							noh_filho = geraNoh(profundidade, noh, geraEstado(no.getEstado(), acao), acao);
+							noh_filho = geraNoh(profundidade, noh, geraEstado(noh.getEstado(), acao), acao);
 
 							if (!containExploredFrontier(frontier, explored, noh_filho)) {
 								if (testaObjetivo(noh_filho)) {
@@ -189,20 +180,8 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
-		int[][] objetivo2 = new int[3][3];
-		int valor = 1;
-
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				objetivo2[i][j] = valor;
-				valor++;
-			}
-		}
-
-		objetivo2[1][1] = 0;
-		objetivo2[2][2] = 5;
+		int[][] objetivo2 = { { 1, 2, 3 }, { 4, 0, 5 }, { 7, 8, 6 } };
 
 		// nó inicial com o estado inicial
 		Noh_arvore no = new Noh_arvore(0, null, objetivo2, null);
