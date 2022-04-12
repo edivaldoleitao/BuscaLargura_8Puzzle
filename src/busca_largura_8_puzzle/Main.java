@@ -124,6 +124,24 @@ public class Main {
 		return retorno_explored || retorno_frontier;
 	}
 
+	public static LinkedList<Noh_arvore> encontraPais(Set<Noh_arvore> explored, Noh_arvore no_filho) {
+		LinkedList<Noh_arvore> lista = new LinkedList<Noh_arvore>();
+		Noh_arvore no2 = no_filho;
+
+		for (Noh_arvore no : explored) {
+			if (no.getNo_pai() == null) {
+				lista.add(no);
+			} else if (Arrays.deepEquals(no2.getNo_pai().getEstado(), no.getEstado())) {
+				lista.add(no);
+				no2 = no;
+			}
+		}
+
+		lista.add(no_filho);
+
+		return lista;
+	}
+
 	// Função da busca em largura
 	public static void buscaLargura(Noh_arvore no) {
 		LinkedList<Noh_arvore> frontier = new LinkedList<Noh_arvore>();
@@ -133,6 +151,7 @@ public class Main {
 		String[] acoes = { "ACIMA", "ABAIXO", "ESQ", "DIR" };
 		int profundidade = 1;
 		boolean objetivo = false;
+		int qtd_visitados = 1;
 
 		if (testaObjetivo(no)) {
 			exibeMatriz(no.getEstado());
@@ -140,7 +159,6 @@ public class Main {
 			System.out.println("Profundidade: " + no.getProfundidade());
 
 		} else {
-			System.out.println("resto processamento");
 			frontier.add(no);
 
 			while (true) {
@@ -154,10 +172,10 @@ public class Main {
 					for (String acao : acoes) {
 						if (geraEstado(noh.getEstado(), acao) != null) {
 							noh_filho = geraNoh(profundidade, noh, geraEstado(noh.getEstado(), acao), acao);
+							qtd_visitados++;
 
 							if (!containExploredFrontier(frontier, explored, noh_filho)) {
 								if (testaObjetivo(noh_filho)) {
-									System.out.println("objetivo alcançado!! " + "profundidade: " + profundidade);
 									objetivo = true;
 									break;
 								} else {
@@ -171,6 +189,14 @@ public class Main {
 				}
 				// verifica flag de objetivo alcançado para sair do laço mais externo
 				if (objetivo) {
+
+					LinkedList<Noh_arvore> lista = encontraPais(explored, noh_filho);
+					for (Noh_arvore no2 : lista) {
+						exibeMatriz(no2.getEstado());
+						System.out.println("Profundidade: " + no2.getProfundidade() + " ");
+						System.out.println();
+					}
+					System.out.print("Objetivo alcançado!! " + qtd_visitados + " estados visitados");
 					break;
 				}
 			}
